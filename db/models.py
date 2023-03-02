@@ -1,24 +1,29 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, Date
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.sql import func
+import os 
+from dotenv import load_dotenv 
+from pathlib import Path 
+from typing import Optional
+from datetime import date
+from sqlmodel import SQLModel, Field, create_engine
+ 
+load_dotenv(dotenv_path=Path('.') / '.env')
 
-Base = declarative_base()
+engine = create_engine(os.getenv('DATABASE_URI'))
 
-
-class Item(Base):
-    __tablename__ = 'item'
-    id = Column(Integer, primary_key=True, index=True, nullable=False)
-    title = Column(String)
-    date = Column(Date)
-    isProject = Column(Boolean)
-    url = Column(String, nullable=True)
-    github = Column(String, nullable=True)
-    notebook = Column(String, nullable=True)
+class Item(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    title: str 
+    date: date 
+    isProject: bool 
+    url: str 
+    github: Optional[str] 
     
     
-class SuperUser(Base):
-    __tablename__ = 'superusers'
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String)
-    email = Column(String)
-    password = Column(String)
+class SuperUser(SQLModel, table=True):
+    id: Optional[int] = Field(primary_key=True)
+    username: str 
+    email: str 
+    password: str
+ 
+    
+def create_tables():
+    SQLModel.metadata.create_all(bind=engine)
