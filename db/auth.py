@@ -32,12 +32,7 @@ def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 def create_user(db: Session, user: schemas.SuperUser):
-    user = models.SuperUser(**user.dict())
-    user.password = pwd_context.hash(user.password)
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    return user 
+    return crud.create_user(db, user, pwd_context)
 
 def authenticate_user(db, username: str, password: str):
     user = crud.get_user(db, username)
