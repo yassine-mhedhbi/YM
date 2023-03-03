@@ -10,7 +10,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
 from . import crud 
-from . import models, schemas
+from .models import SuperUserCreate, User
 
 load_dotenv(dotenv_path=Path('.') / '.env')
 
@@ -31,7 +31,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
-def create_user(db: Session, user: schemas.SuperUser):
+def create_user(db: Session, user: SuperUserCreate):
     return crud.create_user(db, user, pwd_context)
 
 def authenticate_user(db, username: str, password: str):
@@ -74,7 +74,7 @@ def get_current_user(db: Session, token: str):
     return user
 
 
-def get_current_active_user(current_user: schemas.User = Depends(get_current_user)):
+def get_current_active_user(current_user: User = Depends(get_current_user)):
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user

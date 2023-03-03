@@ -1,15 +1,14 @@
-from sqlalchemy.orm import Session
+from sqlmodel import Session, select
 from passlib.context import CryptContext
-from . import models, schemas 
+from .models import Item, SuperUserCreate, SuperUser
 
 def get_user(db: Session, username: str):
-    return db.query(models.SuperUser).filter(models.SuperUser.username == username).first()
+    return db.exec(select(SuperUser).where(SuperUser.username == username)).one()
 
 def get_allusers(db: Session):
-    return db.query(models.SuperUser).all()
+    return db.exec(select(SuperUser)).all()
 
-def create_user(db: Session, user: schemas.SuperUser, pwd_context:CryptContext):
-    user = models.SuperUser(**user.dict())
+def create_user(db: Session, user: SuperUserCreate, pwd_context:CryptContext):
     user.password = pwd_context.hash(user.password)
     db.add(user)
     db.commit()
@@ -17,19 +16,20 @@ def create_user(db: Session, user: schemas.SuperUser, pwd_context:CryptContext):
     return user
 
 def get_post(db: Session, post_id: int):
-    db.query(models.Item).filter(models.Item.id == post_id).first()
+    return db.exec(select(Item).where(Item.id == post_id)).one()
     
 def get_allposts(db: Session):
-    return db.query(models.Item).all()
+    return db.exec(select(Item)).all()
 
-def create_post(db: Session, post: schemas.Item):
-    post = models.Item(**post.dict())
+def create_post(db: Session, post: Item):
+    post = Item(**post.dict())
     db.add(post)
     db.commit()
     db.refresh(post)
     return post 
 
 def remove_post(db: Session, post_id: int):
-    db.query(models.Item).filter(models.Item.id == post_id).delete()
+    post = db.exec(select(Item).where(Item.id == post_id)).one()
+    db.delete(post)
     db.commit()
-    return  
+    return 

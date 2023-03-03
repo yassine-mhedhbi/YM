@@ -1,13 +1,6 @@
-import os 
-from dotenv import load_dotenv 
-from pathlib import Path 
 from typing import Optional
 from datetime import date
-from sqlmodel import SQLModel, Field, create_engine
- 
-load_dotenv(dotenv_path=Path('.') / '.env')
-
-engine = create_engine(os.getenv('DATABASE_URI'))
+from sqlmodel import SQLModel, Field
 
 class Item(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -17,13 +10,15 @@ class Item(SQLModel, table=True):
     url: str 
     github: Optional[str] 
     
-    
-class SuperUser(SQLModel, table=True):
-    id: Optional[int] = Field(primary_key=True)
+class User(SQLModel):
     username: str 
-    email: str 
-    password: str
- 
+    email: str
     
-def create_tables():
+class SuperUserCreate(User):
+    password: str
+    
+class SuperUser(SuperUserCreate, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True) 
+    
+def create_tables(engine):
     SQLModel.metadata.create_all(bind=engine)
