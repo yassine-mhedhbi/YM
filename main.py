@@ -12,7 +12,7 @@ from fastapi.responses import JSONResponse
 import logging
 from session import get_session
 from fastapi import APIRouter
-from endPoints import user, project, post
+# from endPoints import user, project, post
 
 api_router = APIRouter()
 api_router.include_router(project.router)
