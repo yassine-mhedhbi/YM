@@ -11,7 +11,7 @@ import crud
 
 from session import get_session
 import logging
-print(crud)
+
 router = APIRouter(
     prefix="/users",
     tags=["User"],

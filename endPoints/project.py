@@ -11,8 +11,7 @@ import crud
 from inspect import getmembers
 from session import get_session
 import logging
-from pprint import pprint
-pprint(getmembers(crud))
+
 
 router = APIRouter(
     prefix="/projects",
