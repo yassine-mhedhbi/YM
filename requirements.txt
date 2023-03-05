@@ -48,4 +48,3 @@ uvloop==0.17.0
 watchfiles==0.18.1
 websockets==10.4
 aiofiles==0.6.0
-jinja2==2.11.2
