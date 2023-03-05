@@ -72,4 +72,4 @@ def get_curruser(db: Session = Depends(get_session), token: str = Depends(auth.o
     return auth.get_current_user(db, token)
 
 
-app.include_router(api_router)
+# app.include_router(api_router)
