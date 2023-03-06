@@ -14,6 +14,8 @@ from fastapi import APIRouter
 from endPoints import user, project, post, auth
 from inspect import getmembers
 from pprint import pprint
+from starlette.responses import RedirectResponse
+
 load_dotenv(dotenv_path=Path('.') / '.env')
 
 engine = create_engine(os.getenv('DATABASE_URI'))
@@ -49,6 +51,11 @@ async def add_range(request: Request, call_next):
     response.headers['X-Total-Count'] = '30'
     response.headers['Access-Control-Expose-Headers'] = 'X-Total-Count'
     return response
+
+
+@app.route('/{_:path}')
+async def https_redirect(request: Request):
+    return RedirectResponse(request.url.replace(scheme='https'))
 
 
 @app.on_event("startup")

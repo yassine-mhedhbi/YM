@@ -19,7 +19,7 @@ router = APIRouter(
 
 
 @router.post('/', response_model=User, status_code=status.HTTP_201_CREATED)
-def create_user(user: SuperUser, db: Session = Depends(get_session), token: str = Depends(auth.oauth2_scheme)):
+def create_user(user: SuperUser, db: Session = Depends(get_session)):
     auth.create_user(db, user)
     return user
 
