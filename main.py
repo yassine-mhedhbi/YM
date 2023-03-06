@@ -6,19 +6,22 @@ from sqlmodel import Session, create_engine
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from db.models import create_tables, Item, Post, Project, SuperUser, User
-from db import auth
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 import logging
 from session import get_session
 from fastapi import APIRouter
-# from endPoints import user, project, post
-
-
+from endPoints import user, project, post, auth
+from inspect import getmembers
+from pprint import pprint
 load_dotenv(dotenv_path=Path('.') / '.env')
 
 engine = create_engine(os.getenv('DATABASE_URI'))
 
+api_router = APIRouter()
+api_router.include_router(project.router)
+api_router.include_router(post.router)
+api_router.include_router(user.router)
 
 app = FastAPI()
 
@@ -68,4 +71,4 @@ def get_curruser(db: Session = Depends(get_session), token: str = Depends(auth.o
     return auth.get_current_user(db, token)
 
 
-# app.include_router(api_router)
+app.include_router(api_router)

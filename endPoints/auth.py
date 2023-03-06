@@ -9,8 +9,8 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
-import crud
-from .models import SuperUserCreate, User
+from db import crud
+from db.models import SuperUserCreate, User
 
 load_dotenv(dotenv_path=Path('.') / '.env')
 
