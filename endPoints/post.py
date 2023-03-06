@@ -6,6 +6,7 @@ from . import auth
 from db import crud
 from session import get_session
 import logging
+from typing import List
 
 router = APIRouter(
     prefix="/posts",
@@ -14,7 +15,7 @@ router = APIRouter(
 )
 
 
-@router.get('/', response_model=list[Item])
+@router.get('/', response_model=List[Item])
 def get_posts(db: Session = Depends(get_session)):
     return crud.get_allposts(db)
 

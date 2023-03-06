@@ -11,7 +11,7 @@ from db import crud
 from inspect import getmembers
 from session import get_session
 import logging
-
+from typing import List
 
 router = APIRouter(
     prefix="/projects",
@@ -20,7 +20,7 @@ router = APIRouter(
 )
 
 
-@router.get('/', response_model=list[Item])
+@router.get('/', response_model=List[Item])
 def get_projects(db: Session = Depends(get_session)):
     return crud.get_allprojects(db)
 
