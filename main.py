@@ -53,11 +53,6 @@ async def add_range(request: Request, call_next):
     return response
 
 
-@app.route('/{_:path}')
-async def https_redirect(request: Request):
-    return RedirectResponse(request.url.replace(scheme='https'))
-
-
 @app.on_event("startup")
 def on_startup():
     create_tables(engine)
