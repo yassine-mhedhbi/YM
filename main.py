@@ -45,7 +45,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     return JSONResponse(content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 
-@app.middleware("https")
+@app.middleware("http")
 async def add_range(request: Request, call_next):
     response = await call_next(request)
     response.headers['X-Total-Count'] = '30'
