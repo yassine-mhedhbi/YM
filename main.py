@@ -4,7 +4,7 @@ from pathlib import Path
 from fastapi import FastAPI, Depends, HTTPException, status, Request
 from sqlmodel import Session, create_engine
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 from db.models import create_tables, Item, Post, Project, SuperUser, User
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
@@ -14,7 +14,7 @@ from fastapi import APIRouter
 from endPoints import user, project, post, auth
 from inspect import getmembers
 from pprint import pprint
-from starlette.responses import RedirectResponse
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 
 load_dotenv(dotenv_path=Path('.') / '.env')
 
@@ -29,6 +29,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
+    HTTPSRedirectMiddleware
     allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
