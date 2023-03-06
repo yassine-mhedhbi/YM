@@ -10,7 +10,7 @@ from inspect import getmembers
 from pprint import pprint
 from session import get_session
 import logging
-
+from typing import List
 router = APIRouter(
     prefix="/users",
     tags=["User"],
@@ -24,7 +24,7 @@ def create_user(user: SuperUser, db: Session = Depends(get_session), token: str 
     return user
 
 
-@router.get('/', response_model=list[User])
+@router.get('/', response_model=List[User])
 def get_all_users(db: Session = Depends(get_session)):
     return crud.get_allusers(db)
 
