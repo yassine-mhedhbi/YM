@@ -1,19 +1,18 @@
 import os
 from dotenv import load_dotenv
 from pathlib import Path
-from fastapi import FastAPI, Depends, HTTPException, status, Request
+from fastapi import FastAPI, Depends, status, Request
+from starlette.responses import RedirectResponse
 from sqlmodel import Session, create_engine
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette.middleware.cors import CORSMiddleware
-from db.models import create_tables, Item, Post, Project, SuperUser, User
+from db.models import create_tables, User
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 import logging
 from session import get_session
 from fastapi import APIRouter
 from endPoints import user, project, post, auth
-from inspect import getmembers
-from pprint import pprint
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 
 load_dotenv(dotenv_path=Path('.') / '.env')
@@ -35,6 +34,7 @@ app.add_middleware(
     allow_headers=["*"]
 
 )
+app.add_middleware(HTTPSRedirectMiddleware)
 
 
 @app.exception_handler(RequestValidationError)
@@ -45,7 +45,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     return JSONResponse(content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 
-@app.middleware("http")
+@app.middleware("https")
 async def add_range(request: Request, call_next):
     response = await call_next(request)
     response.headers['X-Total-Count'] = '30'
@@ -56,6 +56,11 @@ async def add_range(request: Request, call_next):
 @app.on_event("startup")
 def on_startup():
     create_tables(engine)
+
+
+@app.route('/{_:path}')
+async def https_redirect(request: Request):
+    return RedirectResponse(request.url.replace(scheme='https'))
 
 
 @app.get("/")
