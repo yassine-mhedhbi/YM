@@ -8,6 +8,7 @@ class Post(SQLModel):
     date: date
     isProject: bool = False
     url: str
+    url_img: str
 
 
 class Project(Post):
