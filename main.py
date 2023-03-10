@@ -60,11 +60,6 @@ def on_startup():
     create_tables(engine)
 
 
-@app.route('/{_:path}')
-async def https_redirect(request: Request):
-    return RedirectResponse(request.url.replace(scheme='https'))
-
-
 @app.get("/")
 async def root():
     return {"message": "root page"}
