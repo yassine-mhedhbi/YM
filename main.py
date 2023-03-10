@@ -1,19 +1,21 @@
 import os
 from dotenv import load_dotenv
 from pathlib import Path
-from fastapi import FastAPI, Depends, status, Request
-from starlette.responses import RedirectResponse
+from fastapi import FastAPI, Depends, HTTPException, status, Request
 from sqlmodel import Session, create_engine
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette.middleware.cors import CORSMiddleware
-from db.models import create_tables, User
+from db.models import create_tables, Item, Post, Project, SuperUser, User
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 import logging
 from session import get_session
 from fastapi import APIRouter
 from endPoints import user, project, post, auth
+from inspect import getmembers
+from pprint import pprint
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+import uvicorn
 
 load_dotenv(dotenv_path=Path('.') / '.env')
 
@@ -32,10 +34,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
-)
 
-app.add_middleware(
-    HTTPSRedirectMiddleware
 )
 
 
