@@ -9,8 +9,8 @@ class Create_Project(SQLModel):
     description: str
     date: date
     github: str
-    url: str
-    post: str
+    url: Optional[str]
+    post: Optional[str]
     img_path: str
 
 
