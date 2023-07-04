@@ -42,6 +42,7 @@ def create_user(db: Session, user: SuperUserCreate):
 
 def authenticate_user(db, username: str, password: str):
     user = crud.get_user(db, username)
+    print(user)
     if not user:
         return False
     if not verify_password(password, user.password):

@@ -1,6 +1,6 @@
 from sqlmodel import Session, select
 from passlib.context import CryptContext
-from db.models import Item, SuperUserCreate, SuperUser, Post, Project
+from db.models import Project, SuperUserCreate, SuperUser, Create_Project
 from fastapi import HTTPException
 
 
@@ -20,49 +20,37 @@ def create_user(db: Session, user: SuperUserCreate, pwd_context: CryptContext):
     return user
 
 
-def get_item(db: Session, id: int):
-    item = db.exec(select(Item).where(Item.id == id)).one()
+def get_project(db: Session, id: int):
+    item = db.exec(select(Project).where(Project.id == id)).one()
     if not item:
         raise HTTPException(status_code=404, detail="not found")
     return item
 
 
-def remove_item(db: Session, id: int):
-    post = get_item(db, id)
-    db.delete(post)
+def get_allprojects(db: Session):
+    return db.exec(select(Project)).all()
+
+
+def remove_project(db: Session, id: int):
+    db_project = get_project(db, id)
+    db.delete(db_project)
     db.commit()
-    return post
+    return db_project
 
 
-def update_item(db: Session, id: int, item: Item):
-    db_post = get_item(db, id)
+def update_project(db: Session, id: int, item: Project):
+    db_project = get_project(db, id)
     item_data = item.dict(exclude_unset=True)
     for key, value in item_data.items():
-        setattr(db_post, key, value)
-    db.add(db_post)
+        setattr(db_project, key, value)
+    db.add(db_project)
     db.commit()
-    db.refresh(db_post)
-    return db_post
+    db.refresh(db_project)
+    return db_project
 
 
-def get_allposts(db: Session):
-    return db.exec(select(Item).where(Item.isProject == False)).all()
-
-
-def get_allprojects(db: Session):
-    return db.exec(select(Item).where(Item.isProject == True)).all()
-
-
-def create_post(db: Session, post: Item):
-    post = Item(**post.dict())
-    db.add(post)
-    db.commit()
-    db.refresh(post)
-    return post
-
-
-def create_project(db: Session, project: Project):
-    project = Item(**project.dict())
+def create_project(db: Session, project: Create_Project):
+    project = Project(**project.dict())
     db.add(project)
     db.commit()
     db.refresh(project)

@@ -5,17 +5,14 @@ from fastapi import FastAPI, Depends, HTTPException, status, Request
 from sqlmodel import Session, create_engine
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette.middleware.cors import CORSMiddleware
-from db.models import create_tables, Item, Post, Project, SuperUser, User
+from db.models import create_tables, User
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 import logging
 from session import get_session
 from fastapi import APIRouter
-from endPoints import user, project, post, auth
-from inspect import getmembers
-from pprint import pprint
+from endPoints import user, project, auth
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
-import uvicorn
 
 load_dotenv(dotenv_path=Path('.') / '.env')
 
@@ -23,7 +20,6 @@ engine = create_engine(os.getenv('DATABASE_URI'))
 
 api_router = APIRouter()
 api_router.include_router(project.router)
-api_router.include_router(post.router)
 api_router.include_router(user.router)
 
 app = FastAPI()
@@ -66,6 +62,7 @@ async def root():
 
 @app.post("/token", response_model=auth.Token)
 def login(db: Session = Depends(get_session), form_data: OAuth2PasswordRequestForm = Depends()):
+    print(db)
     return auth.login_for_access_token(db, form_data)
 
 

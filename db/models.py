@@ -3,20 +3,18 @@ from datetime import date
 from sqlmodel import SQLModel, Field
 
 
-class Post(SQLModel):
+class Create_Project(SQLModel):
     title: str
+    subtitle: str
+    description: str
     date: date
-    isProject: bool = False
+    github: str
     url: str
-    url_img: str
+    post: str
+    img_path: str
 
 
-class Project(Post):
-    github: Optional[str] = Field(default=None)
-    isProject = True
-
-
-class Item(Project, table=True):
+class Project(Create_Project, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
 
 

@@ -5,7 +5,7 @@ from fastapi import FastAPI, Depends, HTTPException, status, Request
 from sqlmodel import Session, create_engine
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
-from db.models import create_tables, Item, Post, Project, SuperUser, User
+from db.models import create_tables, Create_Project, Project, SuperUser, User
 from . import auth
 from db import crud
 from inspect import getmembers
@@ -20,23 +20,23 @@ router = APIRouter(
 )
 
 
-@router.get('/', response_model=List[Item])
+@router.get('/', response_model=List[Project])
 def get_projects(db: Session = Depends(get_session)):
     return crud.get_allprojects(db)
 
 
-@router.get('/{project_id}', response_model=Item)
+@router.get('/{project_id}', response_model=Project)
 def get_project(project_id: int, db: Session = Depends(get_session)):
-    return crud.get_item(db, project_id)
+    return crud.get_project(db, project_id)
 
 
-@router.post('/', response_model=Item)
-def create_project(post: Project, db: Session = Depends(get_session), token: str = Depends(auth.oauth2_scheme)):
+@router.post('/', response_model=Project)
+def create_project(post: Create_Project, db: Session = Depends(get_session), token: str = Depends(auth.oauth2_scheme)):
     crud.create_project(db, post)
     return post
 
 
-@router.put('/{project_id}', response_model=Item)
+@router.put('/{project_id}', response_model=Project)
 def update_project(project_id: int, post: Project, db: Session = Depends(get_session), token: str = Depends(auth.oauth2_scheme)):
     crud.update_item(db, project_id, post)
     return post
@@ -44,4 +44,4 @@ def update_project(project_id: int, post: Project, db: Session = Depends(get_ses
 
 @router.delete('/{post_id}', status_code=status.HTTP_204_NO_CONTENT)
 def delete_project(post_id: int, db: Session = Depends(get_session), token: str = Depends(auth.oauth2_scheme)):
-    return crud.remove_item(db, post_id)
+    return crud.remove_project(db, post_id)

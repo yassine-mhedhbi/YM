@@ -19,16 +19,16 @@ router = APIRouter(
 
 
 @router.post('/', response_model=User, status_code=status.HTTP_201_CREATED)
-def create_user(user: SuperUser, db: Session = Depends(get_session)):
+def create_user(user: SuperUser, db: Session = Depends(get_session), token: str = Depends(auth.oauth2_scheme)):
     auth.create_user(db, user)
     return user
 
 
 @router.get('/', response_model=List[User])
-def get_all_users(db: Session = Depends(get_session)):
+def get_all_users(db: Session = Depends(get_session), token: str = Depends(auth.oauth2_scheme)):
     return crud.get_allusers(db)
 
 
 @router.get('/{username}', response_model=User)
-def get_user(username: str, db: Session = Depends(get_session)):
+def get_user(username: str, db: Session = Depends(get_session), token: str = Depends(auth.oauth2_scheme)):
     return crud.get_user(db, username)
