@@ -62,7 +62,6 @@ async def root():
 
 @app.post("/token", response_model=auth.Token)
 def login(db: Session = Depends(get_session), form_data: OAuth2PasswordRequestForm = Depends()):
-    print(db)
     return auth.login_for_access_token(db, form_data)
 
 

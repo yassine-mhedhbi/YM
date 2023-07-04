@@ -38,7 +38,7 @@ def create_project(post: Create_Project, db: Session = Depends(get_session), tok
 
 @router.put('/{project_id}', response_model=Project)
 def update_project(project_id: int, post: Project, db: Session = Depends(get_session), token: str = Depends(auth.oauth2_scheme)):
-    crud.update_item(db, project_id, post)
+    crud.update_project(db, project_id, post)
     return post
 
 
