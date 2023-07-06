@@ -28,7 +28,7 @@ def get_project(db: Session, id: int):
 
 
 def get_allprojects(db: Session):
-    return sorted(db.exec(select(Project)).all(), key=lambda x: x.date)
+    return sorted(db.exec(select(Project)).all(), key=lambda x: x.date, reverse=True)
 
 
 def remove_project(db: Session, id: int):
